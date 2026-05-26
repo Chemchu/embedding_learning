@@ -25,10 +25,10 @@ flash: firmware.bin
 	st-flash --reset write $< 0x8000000
 
 cmsis_core:
-	git clone -q -c advice.detachedHead=false --depth 1 -b 5.9.0 https://github.com/ARM-software/CMSIS_5 $@
+	git clone -q -c advice.detachedHead=false --depth 1 -b 6.3.0 https://github.com/ARM-software/CMSIS_6 $@
 
 cmsis_u0:
-	git clone -q -c advice.detachedHead=false --depth 1 -b v2.6.8 https://github.com/STMicroelectronics/cmsis_device_u0 $@
+	git clone -q -c advice.detachedHead=false --depth 1 -b v1.3.0 https://github.com/STMicroelectronics/cmsis_device_u0 $@
 
 clean:
 	$(RM) firmware.* cmsis_*

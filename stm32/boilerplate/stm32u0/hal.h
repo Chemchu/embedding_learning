@@ -28,7 +28,7 @@ enum { GPIO_MODE_INPUT, GPIO_MODE_OUTPUT, GPIO_MODE_AF, GPIO_MODE_ANALOG };
 static inline void gpio_set_mode(uint16_t pin, uint8_t mode) {
   GPIO_TypeDef *gpio = GPIO(PINBANK(pin)); // GPIO bank
   int n = PINNO(pin);                      // Pin number
-  RCC->AHB1ENR |= BIT(PINBANK(pin));       // Enable GPIO clock
+  RCC->IOPENR |= BIT(PINBANK(pin));        // Enable GPIO clock
   gpio->MODER &= ~(3U << (n * 2));         // Clear existing setting
   gpio->MODER |= (mode & 3U) << (n * 2);   // Set new mode
 }
@@ -59,11 +59,11 @@ static inline void uart_init(USART_TypeDef *uart, unsigned long baud) {
   uint16_t rx = 0, tx = 0; // pins
 
   if (uart == UART1)
-    RCC->APB2ENR |= BIT(4);
+    RCC->APBENR2 |= BIT(14);
   if (uart == UART2)
-    RCC->APB1ENR |= BIT(17);
+    RCC->APBENR1 |= BIT(17);
   if (uart == UART3)
-    RCC->APB1ENR |= BIT(18);
+    RCC->APBENR1 |= BIT(18);
 
   if (uart == UART1)
     tx = PIN('A', 9), rx = PIN('A', 10);
@@ -82,8 +82,8 @@ static inline void uart_init(USART_TypeDef *uart, unsigned long baud) {
 }
 
 static inline void uart_write_byte(USART_TypeDef *uart, uint8_t byte) {
-  uart->DR = byte;
-  while ((uart->SR & BIT(7)) == 0)
+  uart->TDR = byte;
+  while ((uart->ISR & BIT(7)) == 0)
     spin(1);
 }
 
@@ -93,11 +93,11 @@ static inline void uart_write_buf(USART_TypeDef *uart, char *buf, size_t len) {
 }
 
 static inline int uart_read_ready(USART_TypeDef *uart) {
-  return uart->SR & BIT(5); // If RXNE bit is set, data is ready
+  return uart->ISR & BIT(5); // If RXNE bit is set, data is ready
 }
 
 static inline uint8_t uart_read_byte(USART_TypeDef *uart) {
-  return (uint8_t)(uart->DR & 255);
+  return (uint8_t)(uart->RDR & 255);
 }
 
 static inline bool timer_expired(volatile uint32_t *t, uint32_t prd,

@@ -10,7 +10,7 @@ void SysTick_Handler(void) {
 
 uint32_t SystemCoreClock = FREQ;
 void SystemInit(void) {
-  RCC->APB2ENR |= RCC_APB2ENR_SYSCFGEN;    // Enable SYSCFG
+  RCC->APBENR2 |= RCC_APBENR2_SYSCFGEN;    // Enable SYSCFG
   SysTick_Config(SystemCoreClock / 1000);  // Tick every 1 ms
 }
 

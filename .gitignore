@@ -1,2 +1,5 @@
+*/**/.devenv
+*/**/.clangd
+
 */**/*.bin
 */**/*cube_*

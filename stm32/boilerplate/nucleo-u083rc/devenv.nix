@@ -20,14 +20,33 @@
       cp cube_u0/Drivers/CMSIS/Core/Include/*.h                    include/
       cp cube_u0/Drivers/CMSIS/Device/ST/STM32U0xx/Include/*.h     include/
       cp cube_u0/Drivers/STM32U0xx_HAL_Driver/Inc/*.h              include/
+      mkdir -p include/Legacy
+      cp cube_u0/Drivers/STM32U0xx_HAL_Driver/Inc/Legacy/*.h       include/Legacy/
       cp cube_u0/Drivers/STM32U0xx_HAL_Driver/Inc/Legacy/*.h       include/
       cp cube_u0/Drivers/BSP/STM32U0xx_Nucleo/*.h                  include/
 
-      # hal_conf.h is not in Inc/ — create it from the template (preserved across re-runs)
+      # conf headers are not shipped as-is — create them from templates (preserved across re-runs)
       if [ ! -f "include/stm32u0xx_hal_conf.h" ]; then
         cp cube_u0/Drivers/STM32U0xx_HAL_Driver/Inc/stm32u0xx_hal_conf_template.h \
            include/stm32u0xx_hal_conf.h
         echo "[devenv] Created include/stm32u0xx_hal_conf.h from template."
+      fi
+      if [ ! -f "include/stm32u0xx_nucleo_conf.h" ]; then
+        cp cube_u0/Drivers/BSP/STM32U0xx_Nucleo/stm32u0xx_nucleo_conf_template.h \
+           include/stm32u0xx_nucleo_conf.h
+        echo "[devenv] Created include/stm32u0xx_nucleo_conf.h from template."
+      fi
+
+      if [ ! -f "include/main.h" ]; then
+        cat > include/main.h <<'MAIN_H'
+#ifndef MAIN_H
+#define MAIN_H
+
+#include "stm32u0xx_nucleo.h"
+
+#endif /* MAIN_H */
+MAIN_H
+        echo "[devenv] Created include/main.h."
       fi
 
       echo "[devenv] Removing cube_u0..."
@@ -35,15 +54,16 @@
       echo "[devenv] include/ ready."
     fi
 
+    root=$(pwd)
     sysroot=$(arm-none-eabi-gcc -print-sysroot)
     gcc_include=$(arm-none-eabi-gcc -print-file-name=include)
     cat > .clangd <<CLANGD
 CompileFlags:
   Compiler: arm-none-eabi-gcc
   Add:
-    - -I.
-    - -Iinclude
-    - -Isrc
+    - -I$root
+    - -I$root/include
+    - -I$root/src
     - --target=arm-none-eabi
     - -mcpu=cortex-m0plus
     - -mthumb

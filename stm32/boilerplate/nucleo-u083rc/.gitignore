@@ -3,3 +3,4 @@ cube_*/
 firmware.*
 .clangd
 compile_commands.json
+include/

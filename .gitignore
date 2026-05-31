@@ -1,5 +1,6 @@
 */**/.devenv
 */**/.clangd
+*/**/*.map
 
 */**/*.bin
 */**/*cube_*

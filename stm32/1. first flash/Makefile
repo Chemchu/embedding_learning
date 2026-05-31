@@ -21,8 +21,10 @@ firmware.elf: cmsis_core cmsis_u0 hal.h link.ld Makefile $(SOURCES)
 firmware.bin: firmware.elf
 	arm-none-eabi-objcopy -O binary $< $@
 
+CHIP ?= STM32U083RC
+
 flash: firmware.bin
-	st-flash --reset write $< 0x8000000
+	probe-rs download --chip $(CHIP) --binary-format bin --base-address 0x08000000 $<
 
 cmsis_core:
 	git clone -q -c advice.detachedHead=false --depth 1 -b v6.3.0 https://github.com/ARM-software/CMSIS_6 $@

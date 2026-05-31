@@ -1,2 +1,2 @@
-*/**/cmsis_core/
-*/**/cmsis_core/*
+*/**/*.bin
+*/**/*cube_*

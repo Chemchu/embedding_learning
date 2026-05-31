@@ -4,3 +4,4 @@ firmware.*
 .clangd
 compile_commands.json
 include/
+lib/

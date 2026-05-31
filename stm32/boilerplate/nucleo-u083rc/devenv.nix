@@ -6,8 +6,8 @@
   ];
 
   enterShell = ''
-    # Sentinel: real file means headers already copied; symlink or missing triggers (re)population
-    if [ -L "include/stm32u0xx_hal.h" ] || [ ! -f "include/stm32u0xx_hal.h" ]; then
+    # Sentinel: lib/system_stm32u0xx.c present means setup already ran
+    if [ ! -f "lib/system_stm32u0xx.c" ]; then
       if [ ! -d "cube_u0" ]; then
         echo "[devenv] Cloning STM32CubeU0..."
         git clone -q -c advice.detachedHead=false --depth 1 \
@@ -16,16 +16,15 @@
       fi
 
       echo "[devenv] Copying headers into include/..."
-      mkdir -p include
+      mkdir -p include include/Legacy
       cp cube_u0/Drivers/CMSIS/Core/Include/*.h                    include/
       cp cube_u0/Drivers/CMSIS/Device/ST/STM32U0xx/Include/*.h     include/
       cp cube_u0/Drivers/STM32U0xx_HAL_Driver/Inc/*.h              include/
-      mkdir -p include/Legacy
       cp cube_u0/Drivers/STM32U0xx_HAL_Driver/Inc/Legacy/*.h       include/Legacy/
       cp cube_u0/Drivers/STM32U0xx_HAL_Driver/Inc/Legacy/*.h       include/
       cp cube_u0/Drivers/BSP/STM32U0xx_Nucleo/*.h                  include/
 
-      # conf headers are not shipped as-is — create them from templates (preserved across re-runs)
+      # conf headers are not shipped as-is — create from templates (preserved across re-runs)
       if [ ! -f "include/stm32u0xx_hal_conf.h" ]; then
         cp cube_u0/Drivers/STM32U0xx_HAL_Driver/Inc/stm32u0xx_hal_conf_template.h \
            include/stm32u0xx_hal_conf.h
@@ -37,9 +36,19 @@
         echo "[devenv] Created include/stm32u0xx_nucleo_conf.h from template."
       fi
 
+      echo "[devenv] Copying sources into lib/..."
+      mkdir -p lib/hal lib/bsp
+      cp cube_u0/Drivers/STM32U0xx_HAL_Driver/Src/*.c                                   lib/hal/
+      cp cube_u0/Drivers/BSP/STM32U0xx_Nucleo/stm32u0xx_nucleo.c                        lib/bsp/
+      cp cube_u0/Drivers/CMSIS/Device/ST/STM32U0xx/Source/Templates/system_stm32u0xx.c  lib/
+      cp cube_u0/Drivers/CMSIS/Device/ST/STM32U0xx/Source/Templates/gcc/startup_stm32u083xx.s lib/
+
+      echo "[devenv] Copying linker script..."
+      cp cube_u0/Drivers/CMSIS/Device/ST/STM32U0xx/Source/Templates/gcc/linker/STM32U083RCTX_FLASH.ld .
+
       echo "[devenv] Removing cube_u0..."
       rm -rf cube_u0
-      echo "[devenv] include/ ready."
+      echo "[devenv] Done."
     fi
 
     root=$(pwd)

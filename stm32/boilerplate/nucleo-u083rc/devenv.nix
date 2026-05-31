@@ -37,18 +37,6 @@
         echo "[devenv] Created include/stm32u0xx_nucleo_conf.h from template."
       fi
 
-      if [ ! -f "include/main.h" ]; then
-        cat > include/main.h <<'MAIN_H'
-#ifndef MAIN_H
-#define MAIN_H
-
-#include "stm32u0xx_nucleo.h"
-
-#endif /* MAIN_H */
-MAIN_H
-        echo "[devenv] Created include/main.h."
-      fi
-
       echo "[devenv] Removing cube_u0..."
       rm -rf cube_u0
       echo "[devenv] include/ ready."

@@ -5,3 +5,4 @@ firmware.*
 compile_commands.json
 include/
 lib/
+*.ld

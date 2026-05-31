@@ -16,7 +16,7 @@ LDFLAGS = $(CPU) -T$(LDSCRIPT) -Wl,--gc-sections -Wl,-Map=$(BUILD)/$(TARGET).map
 
 C_SRCS  = $(wildcard src/*.c)
 C_SRCS += lib/system_stm32u0xx.c
-C_SRCS += $(wildcard lib/hal/*.c)
+C_SRCS += $(filter-out %_template.c, $(wildcard lib/hal/*.c))
 C_SRCS += $(wildcard lib/bsp/*.c)
 
 AS_SRCS = lib/startup_stm32u083xx.s

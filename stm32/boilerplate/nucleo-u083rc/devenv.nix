@@ -38,13 +38,17 @@
 
       echo "[devenv] Copying sources into lib/..."
       mkdir -p lib/hal lib/bsp
-      cp cube_u0/Drivers/STM32U0xx_HAL_Driver/Src/*.c                                   lib/hal/
+      for f in cube_u0/Drivers/STM32U0xx_HAL_Driver/Src/*.c; do
+        case "$f" in *_template.c) continue ;; esac
+        cp "$f" lib/hal/
+      done
       cp cube_u0/Drivers/BSP/STM32U0xx_Nucleo/stm32u0xx_nucleo.c                        lib/bsp/
       cp cube_u0/Drivers/CMSIS/Device/ST/STM32U0xx/Source/Templates/system_stm32u0xx.c  lib/
       cp cube_u0/Drivers/CMSIS/Device/ST/STM32U0xx/Source/Templates/gcc/startup_stm32u083xx.s lib/
 
       echo "[devenv] Copying linker script..."
-      cp cube_u0/Drivers/CMSIS/Device/ST/STM32U0xx/Source/Templates/gcc/linker/STM32U083RCTX_FLASH.ld .
+      ld_src=$(find cube_u0/Drivers/CMSIS/Device/ST/STM32U0xx/Source/Templates/gcc/linker -name "STM32U083*.ld" | head -1)
+      cp "$ld_src" STM32U083RCTX_FLASH.ld
 
       echo "[devenv] Removing cube_u0..."
       rm -rf cube_u0

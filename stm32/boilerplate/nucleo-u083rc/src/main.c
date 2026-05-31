@@ -1,6 +1,3 @@
-#include "stm32u0xx_hal.h"
+#include "main.h"
 
-int main(void) {
-    HAL_Init();
-    while (1) {}
-}
+int main() { return 0; }

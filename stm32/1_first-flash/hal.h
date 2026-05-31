@@ -48,6 +48,7 @@ static inline void gpio_write(uint16_t pin, bool val) {
 #define UART1 USART1
 #define UART2 USART2
 #define UART3 USART3
+#define UART4 USART4
 
 #ifndef UART_DEBUG
 #define UART_DEBUG USART3

@@ -13,8 +13,8 @@ void SystemInit(void) {
 }
 
 int main(void) {
-  uint16_t led = PIN('B', 7);                // PB7 (pin 21)
-  gpio_set_mode(led, GPIO_MODE_OUTPUT);      // Set blue LED to output mode
+  uint16_t led = PIN('A', 5);                // PA5
+  gpio_set_mode(led, GPIO_MODE_OUTPUT);      // Set LED to output mode
   uart_init(UART_DEBUG, 115200);             // Initialise UART
   volatile uint32_t timer = 0, period = 500; // Declare timers
   for (;;) {
